@@ -26,6 +26,7 @@ class CustomerResource extends Resource
                 Forms\Components\TextInput::make('name')
                                           ->required(),
                 Forms\Components\TextInput::make('phone')
+                                          ->type('tel')
                                           ->prefix('+62'),
                 Forms\Components\Textarea::make('address'),
             ]);
@@ -43,6 +44,7 @@ class CustomerResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -63,6 +65,7 @@ class CustomerResource extends Resource
             'index'  => Pages\ListCustomers::route('/'),
             'create' => Pages\CreateCustomer::route('/create'),
             'edit'   => Pages\EditCustomer::route('/{record}/edit'),
+            'view'   => Pages\ViewCustomer::route('/{record}'),
         ];
     }
 }
