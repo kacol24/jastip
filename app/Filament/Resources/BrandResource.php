@@ -27,7 +27,7 @@ class BrandResource extends Resource
                                           ->required(),
                 Forms\Components\TextInput::make('phone')
                                           ->prefix('+62')
-                                          ->type('tel'),
+                                          ->tel(),
                 Forms\Components\Textarea::make('address'),
                 Forms\Components\RichEditor::make('information'),
             ]);

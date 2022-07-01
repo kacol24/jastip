@@ -26,7 +26,7 @@ class CustomerResource extends Resource
                 Forms\Components\TextInput::make('name')
                                           ->required(),
                 Forms\Components\TextInput::make('phone')
-                                          ->type('tel')
+                                          ->tel()
                                           ->prefix('+62'),
                 Forms\Components\Textarea::make('address'),
             ]);
