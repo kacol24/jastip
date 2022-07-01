@@ -37,7 +37,8 @@ class CustomerResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('phone'),
+                Tables\Columns\TextColumn::make('phone')
+                                         ->prefix('+62'),
                 Tables\Columns\TextColumn::make('address'),
             ])
             ->filters([

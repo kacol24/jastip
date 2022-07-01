@@ -19,8 +19,8 @@ return new class extends Migration
             $table->foreignId('brand_id')->constrained();
 
             $table->string('name');
-            $table->decimal('price', 15, 2)->default(0);
-            $table->decimal('fee', 15, 2)->default(0);
+            $table->bigInteger('price')->default(0);
+            $table->bigInteger('fee')->default(0);
 
             $table->timestamps();
             $table->softDeletes();
