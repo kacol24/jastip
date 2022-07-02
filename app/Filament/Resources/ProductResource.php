@@ -62,6 +62,8 @@ class ProductResource extends Resource
                                                      return $query->searchByName($search);
                                                  });
                                          }),
+                Tables\Columns\TextColumn::make('brand.name')
+                                         ->toggleable(),
                 Tables\Columns\TextColumn::make('price')
                                          ->prefix('Rp')
                                          ->formatStateUsing(fn($state) => number_format($state, 0, ',', '.')),
@@ -71,7 +73,7 @@ class ProductResource extends Resource
             ])
             ->filters([
                 Tables\Filters\MultiSelectFilter::make('brand')
-                                                ->relationship('brand', 'name')
+                                                ->relationship('brand', 'name'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

@@ -84,9 +84,11 @@ class OrderResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                                         ->label('ID'),
+                                         ->label('ID')
+                                         ->sortable(),
                 Tables\Columns\TextColumn::make('customer.name')
-                                         ->label('Customer'),
+                                         ->label('Customer')
+                                         ->sortable(),
                 Tables\Columns\TextColumn::make('items_count')
                                          ->counts('items')
                                          ->label('Items')
@@ -114,7 +116,8 @@ class OrderResource extends Resource
                                          ->formatStateUsing(fn($state) => number_format($state, 0, ',', '.'))
                                          ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
-                                         ->dateTime(),
+                                         ->dateTime()
+                                         ->sortable(),
             ])
             ->filters([
                 //
