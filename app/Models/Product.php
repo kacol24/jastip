@@ -18,6 +18,8 @@ class Product extends Model
         'name',
         'price',
         'fee',
+        'is_frozen',
+        'is_handcarry',
     ];
 
     protected $appends = [
