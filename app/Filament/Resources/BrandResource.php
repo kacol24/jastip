@@ -41,12 +41,15 @@ class BrandResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('order_count'),
-                Tables\Columns\TextColumn::make('phone'),
+                Tables\Columns\TextColumn::make('phone')
+                                         ->toggleable(),
                 Tables\Columns\TextColumn::make('address')
                                          ->limit(30)
-                                         ->wrap(),
+                                         ->wrap()
+                                         ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('information')
-                                         ->html(),
+                                         ->html()
+                                         ->toggleable(),
             ])
             ->filters([
                 //
