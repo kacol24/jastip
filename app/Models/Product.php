@@ -31,6 +31,11 @@ class Product extends Model
         return $this->belongsTo(Brand::class);
     }
 
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
     public function scopeSearchByName($query, $search)
     {
         return $query->where('name', 'like', "%{$search}%");
@@ -39,5 +44,20 @@ class Product extends Model
     public function getFullNameAttribute()
     {
         return '['.$this->brand->name.'] '.$this->name;
+    }
+
+    public function getOrderCountAttribute()
+    {
+        return $this->orderItems->groupBy('order_id')->count();
+    }
+
+    public function getOrderQuantityAttribute()
+    {
+        return $this->orderItems->sum('quantity');
+    }
+
+    public function getOrderSubtotalAttribute()
+    {
+        return $this->price * $this->order_quantity;
     }
 }

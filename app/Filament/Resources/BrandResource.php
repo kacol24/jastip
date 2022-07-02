@@ -62,7 +62,8 @@ class BrandResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\ProductsRelationManager::class,
+            //RelationManagers\OrderItemsRelationManager::class,
         ];
     }
 

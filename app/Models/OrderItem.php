@@ -25,6 +25,7 @@ class OrderItem extends Model
         'price',
         'fee',
         'subtotal',
+        'name',
     ];
 
     public function order()
@@ -35,6 +36,11 @@ class OrderItem extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function getNameAttribute()
+    {
+        return $this->product->name;
     }
 
     public function getPriceAttribute()
