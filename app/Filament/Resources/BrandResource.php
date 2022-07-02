@@ -15,11 +15,15 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class BrandResource extends Resource
 {
+    protected static ?string $label = 'Stores';
+
     protected static ?string $model = Brand::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
     protected static ?string $navigationGroup = 'MASTER';
+
+    protected static ?string $slug = 'stores';
 
     public static function form(Form $form): Form
     {

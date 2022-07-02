@@ -15,7 +15,7 @@ final class ProductForm
     {
         return [
             Select::make('brand_id')
-                  ->label('Brand')
+                  ->label('Store')
                   ->options(Brand::active()->get()->pluck('name', 'id'))
                   ->searchable(),
             TextInput::make('name'),
