@@ -47,7 +47,10 @@ class ProductsRelationManager extends RelationManager
                                          }),
             ])
             ->filters([
-                //
+                Tables\Filters\Filter::make('has_order')
+                                     ->query(fn(Builder $query): Builder => $query->has('orderItems'))
+                                     ->toggle()
+                                     ->default(),
             ])
             ->headerActions([
                 //Tables\Actions\CreateAction::make(),
