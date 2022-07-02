@@ -53,7 +53,13 @@ class ProductResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('full_name')
-                                         ->searchable(['name']),
+                                         ->searchable(query: function (Builder $query, string $search): Builder {
+                                             return $query
+                                                 ->searchByName($search)
+                                                 ->orWhereHas('brand', function ($query) use ($search) {
+                                                     return $query->searchByName($search);
+                                                 });
+                                         }),
                 Tables\Columns\TextColumn::make('price')
                                          ->prefix('Rp')
                                          ->formatStateUsing(fn($state) => number_format($state, 0, ',', '.')),
@@ -62,7 +68,8 @@ class ProductResource extends Resource
                                          ->formatStateUsing(fn($state) => number_format($state, 0, ',', '.')),
             ])
             ->filters([
-                //
+                Tables\Filters\MultiSelectFilter::make('brand')
+                                                ->relationship('brand', 'name')
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

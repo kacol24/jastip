@@ -24,4 +24,9 @@ class Brand extends Model
     {
         return $this->hasMany(Product::class);
     }
+
+    public function scopeSearchByName($query, $search)
+    {
+        return $query->where('name', 'like', "%{$search}%");
+    }
 }

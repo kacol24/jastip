@@ -29,6 +29,11 @@ class Product extends Model
         return $this->belongsTo(Brand::class);
     }
 
+    public function scopeSearchByName($query, $search)
+    {
+        return $query->where('name', 'like', "%{$search}%");
+    }
+
     public function getFullNameAttribute()
     {
         return '['.$this->brand->name.'] '.$this->name;
