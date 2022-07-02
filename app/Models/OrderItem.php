@@ -26,6 +26,8 @@ class OrderItem extends Model
         'fee',
         'subtotal',
         'name',
+        'line_total',
+        'line_profit',
     ];
 
     public function order()
@@ -55,6 +57,16 @@ class OrderItem extends Model
 
     public function getSubtotalAttribute()
     {
-        return $this->quantity * ($this->price + $this->fee);
+        return $this->quantity * $this->price;
+    }
+
+    public function getLineTotalAttribute()
+    {
+        return $this->subtotal + $this->line_profit;
+    }
+
+    public function getLineProfitAttribute()
+    {
+        return $this->quantity * $this->fee;
     }
 }

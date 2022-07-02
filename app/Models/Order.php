@@ -53,7 +53,7 @@ class Order extends Model
 
     public function getSubtotalAttribute()
     {
-        return $this->items->sum('subtotal');
+        return $this->items->sum('line_total');
     }
 
     public function getGrandTotalAttribute()
@@ -64,5 +64,10 @@ class Order extends Model
     public function getAmountDueAttribute()
     {
         return $this->grand_total - $this->deposit;
+    }
+
+    public function getProfitAttribute()
+    {
+        return $this->items->sum('line_profit');
     }
 }

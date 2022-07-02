@@ -4,11 +4,13 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
+use App\Filament\Resources\OrderResource\Widgets\OrdersOverview;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TextInput\Mask;
@@ -67,7 +69,7 @@ class OrderResource extends Resource
                                  ->default('0'),
                     ]),
                 Forms\Components\RichEditor::make('notes'),
-                Forms\Components\Placeholder::make('Items'),
+                Placeholder::make('Items'),
                 Forms\Components\Repeater::make('items')
                                          ->relationship()
                                          ->schema(self::itemSchema())
@@ -208,13 +210,20 @@ class OrderResource extends Resource
                                  $set('subtotal', number_format($subtotal, 0, ',', '.'));
                              })
                              ->default(1),
-                    TextInput::make('subtotal')
+                    TextInput::make('line_total')
                              ->disabled()
                              ->prefix('Rp')
                              ->default('0')
                              ->mask(fn(Mask $mask) => $mask->money('', '.', 0)),
                 ])
                 ->columns(4),
+        ];
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            OrdersOverview::class,
         ];
     }
 }
