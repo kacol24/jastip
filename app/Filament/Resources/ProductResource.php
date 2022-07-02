@@ -3,8 +3,9 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
+use App\Filament\Resources\ProductResource\ProductForm;
+use App\Filament\Resources\ProductResource\ProductTable;
 use App\Filament\Resources\ProductResource\RelationManagers;
-use App\Models\Brand;
 use App\Models\Product;
 use Filament\Forms;
 use Filament\Resources\Form;
@@ -24,83 +25,27 @@ class ProductResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\Select::make('brand_id')
-                                       ->label('Brand')
-                                       ->relationship('brand', 'name')
-                                       ->searchable()
-                                       ->createOptionForm([
-                                           Forms\Components\TextInput::make('name'),
-                                       ]),
-                Forms\Components\TextInput::make('name'),
-                Forms\Components\TextInput::make('price')
-                                          ->numeric()
-                                          ->prefix('Rp')
-                                          ->mask(
-                                              fn(Forms\Components\TextInput\Mask $mask) => $mask->money('', '.', 0)
-                                          )
-                                          ->minValue(0)
-                                          ->default('0'),
-                Forms\Components\TextInput::make('fee')
-                                          ->numeric()
-                                          ->prefix('Rp')
-                                          ->mask(
-                                              fn(Forms\Components\TextInput\Mask $mask) => $mask->money('', '.', 0)
-                                          )
-                                          ->minValue(0)
-                                          ->default(15000),
-            ]);
+        return $form->schema(ProductForm::schema());
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('full_name')
-                                         ->searchable(query: function (Builder $query, string $search): Builder {
-                                             return $query
-                                                 ->searchByName($search)
-                                                 ->orWhereHas('brand', function ($query) use ($search) {
-                                                     return $query->searchByName($search);
-                                                 });
-                                         }),
-                Tables\Columns\TextColumn::make('brand.name')
-                                         ->toggleable(),
-                Tables\Columns\TextColumn::make('price')
-                                         ->prefix('Rp')
-                                         ->formatStateUsing(fn($state) => number_format($state, 0, ',', '.')),
-                Tables\Columns\TextColumn::make('fee')
-                                         ->prefix('Rp')
-                                         ->formatStateUsing(fn($state) => number_format($state, 0, ',', '.')),
-            ])
-            ->filters([
-                Tables\Filters\MultiSelectFilter::make('brand')
-                                                ->relationship('brand', 'name'),
-            ])
+            ->columns(ProductTable::table())
+            ->filters(ProductTable::filter())
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListProducts::route('/'),
-            'create' => Pages\CreateProduct::route('/create'),
-            'view'   => Pages\ViewProduct::route('/{record}'),
-            'edit'   => Pages\EditProduct::route('/{record}/edit'),
+            'index' => Pages\ManageProducts::route('/'),
         ];
     }
 }
