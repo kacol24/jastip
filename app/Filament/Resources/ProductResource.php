@@ -29,7 +29,10 @@ class ProductResource extends Resource
                 Forms\Components\Select::make('brand_id')
                                        ->label('Brand')
                                        ->options(Brand::active()->get()->pluck('name', 'id'))
-                                       ->searchable(),
+                                       ->searchable()
+                                       ->createOptionForm([
+                                           Forms\Components\TextInput::make('name'),
+                                       ]),
                 Forms\Components\TextInput::make('name'),
                 Forms\Components\TextInput::make('price')
                                           ->numeric()
