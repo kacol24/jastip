@@ -34,4 +34,9 @@ class Brand extends Model
     {
         return $query->where('name', 'like', "%{$search}%");
     }
+
+    public function getOrderCountAttribute()
+    {
+        return $this->orderItems->groupBy('order_id')->count();
+    }
 }

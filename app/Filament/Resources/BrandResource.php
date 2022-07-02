@@ -40,6 +40,7 @@ class BrandResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('order_count'),
                 Tables\Columns\TextColumn::make('phone'),
                 Tables\Columns\TextColumn::make('address')
                                          ->limit(30)
