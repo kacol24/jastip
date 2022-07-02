@@ -76,7 +76,7 @@ class BrandResource extends Resource
     {
         return [
             RelationManagers\ProductsRelationManager::class,
-            //RelationManagers\OrderItemsRelationManager::class,
+            RelationManagers\OrderItemsRelationManager::class,
         ];
     }
 
