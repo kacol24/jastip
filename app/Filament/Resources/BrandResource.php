@@ -45,6 +45,11 @@ class BrandResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('order_count'),
+                Tables\Columns\TextColumn::make('order_value')
+                                         ->prefix('Rp')
+                                         ->formatStateUsing(function ($state) {
+                                             return number_format($state, 0, ',', '.');
+                                         }),
                 Tables\Columns\TextColumn::make('phone')
                                          ->toggleable(),
                 Tables\Columns\TextColumn::make('address')
