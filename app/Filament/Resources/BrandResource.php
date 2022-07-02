@@ -45,6 +45,7 @@ class BrandResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('order_count'),
+                Tables\Columns\TextColumn::make('order_items_count'),
                 Tables\Columns\TextColumn::make('order_value')
                                          ->prefix('Rp')
                                          ->formatStateUsing(function ($state) {

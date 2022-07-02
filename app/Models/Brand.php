@@ -44,4 +44,9 @@ class Brand extends Model
     {
         return $this->orderItems->sum('subtotal');
     }
+
+    public function getOrderItemsCountAttribute()
+    {
+        return $this->orderItems->sum('quantity');
+    }
 }
