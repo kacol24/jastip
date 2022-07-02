@@ -53,7 +53,7 @@ class ProductResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('full_name')
-                                         ->searchable(),
+                                         ->searchable(['name']),
                 Tables\Columns\TextColumn::make('price')
                                          ->prefix('Rp')
                                          ->formatStateUsing(fn($state) => number_format($state, 0, ',', '.')),
