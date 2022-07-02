@@ -62,7 +62,9 @@ class BrandResource extends Resource
                                          ->toggleable(),
             ])
             ->filters([
-                //
+                Tables\Filters\Filter::make('has_order')
+                                     ->query(fn(Builder $query): Builder => $query->has('orderItems'))
+                                     ->toggle(),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
