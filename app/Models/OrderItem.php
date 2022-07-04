@@ -69,4 +69,24 @@ class OrderItem extends Model
     {
         return $this->quantity * $this->fee;
     }
+
+    public function getFormattedPriceAttribute()
+    {
+        return $this->formatMoney($this->price);
+    }
+
+    public function getFormattedFeeAttribute()
+    {
+        return $this->formatMoney($this->fee);
+    }
+
+    public function getFormattedLineTotalAttribute()
+    {
+        return $this->formatMoney($this->line_total);
+    }
+
+    protected function formatMoney($amount)
+    {
+        return 'Rp' . number_format($amount, 0, ',', '.');
+    }
 }

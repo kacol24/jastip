@@ -93,26 +93,25 @@ class OrderResource extends Resource
                                          ->sortable(),
                 Tables\Columns\TextColumn::make('items_count')
                                          ->counts('items')
-                                         ->label('Items')
-                                         ->toggleable(isToggledHiddenByDefault: true),
+                                         ->label('Orders'),
                 Tables\Columns\TextColumn::make('items_sum_quantity')
                                          ->sum('items', 'quantity')
-                                         ->label('Qty.')
-                                         ->toggleable(isToggledHiddenByDefault: true),
+                                         ->label('Qty.'),
                 Tables\Columns\TextColumn::make('status'),
                 Tables\Columns\TextColumn::make('deposit')
                                          ->prefix('Rp')
                                          ->formatStateUsing(fn($state) => number_format($state, 0, ',', '.')),
                 Tables\Columns\TextColumn::make('subtotal')
                                          ->prefix('Rp')
-                                         ->formatStateUsing(fn($state) => number_format($state, 0, ',', '.'))
-                                         ->toggleable(isToggledHiddenByDefault: true),
+                                         ->formatStateUsing(fn($state) => number_format($state, 0, ',', '.')),
                 Tables\Columns\TextColumn::make('shipping_fee')
                                          ->prefix('Rp')
-                                         ->formatStateUsing(fn($state) => number_format($state, 0, ',', '.')),
+                                         ->formatStateUsing(fn($state) => number_format($state, 0, ',', '.'))
+                                         ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('grand_total')
                                          ->prefix('Rp')
-                                         ->formatStateUsing(fn($state) => number_format($state, 0, ',', '.')),
+                                         ->formatStateUsing(fn($state) => number_format($state, 0, ',', '.'))
+                                         ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('amount_due')
                                          ->prefix('Rp')
                                          ->formatStateUsing(fn($state) => number_format($state, 0, ',', '.'))
@@ -125,6 +124,18 @@ class OrderResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('confirmation')
+                                     ->label('Confirm Order')
+                                     ->url(fn(Order $record): string => $record->confirmation_link)
+                                     ->icon('heroicon-o-clipboard-list')
+                                     ->visible(fn(Order $record): bool => $record->status == Order::STATUS_OPEN)
+                                     ->openUrlInNewTab(),
+                Tables\Actions\Action::make('invoice')
+                                     ->label('Send Invoice')
+                                     ->url(fn(Order $record): string => $record->invoice_link)
+                                     ->icon('heroicon-s-cash')
+                                     ->visible(fn(Order $record): bool => $record->status == Order::STATUS_CLOSED)
+                                     ->openUrlInNewTab(),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])

@@ -33,6 +33,7 @@ class Order extends Model
 
     protected $with = [
         'items',
+        'customer',
     ];
 
     protected $appends = [
@@ -69,5 +70,35 @@ class Order extends Model
     public function getProfitAttribute()
     {
         return $this->items->sum('line_profit');
+    }
+
+    public function getConfirmationLinkAttribute()
+    {
+        $groupedOrderItems = $this->items->groupBy(function ($orderItem) {
+            return $orderItem->product->brand->name;
+        });
+
+        $append = view('wa-confirmation', [
+            'customer'    => $this->customer,
+            'order'       => $this,
+            'storeOrders' => $groupedOrderItems,
+        ])->render();
+
+        return "https://wa.me/{$this->customer->whatsapp_phone}?text=".urlencode($append);
+    }
+
+    public function getInvoiceLinkAttribute()
+    {
+        $groupedOrderItems = $this->items->groupBy(function ($orderItem) {
+            return $orderItem->product->brand->name;
+        });
+
+        $append = view('wa-invoice', [
+            'customer'    => $this->customer,
+            'order'       => $this,
+            'storeOrders' => $groupedOrderItems,
+        ])->render();
+
+        return "https://wa.me/{$this->customer->whatsapp_phone}?text=".urlencode($append);
     }
 }

@@ -23,4 +23,13 @@ class Customer extends Model
     {
         return $this->hasMany(Order::class);
     }
+
+    public function getWhatsappPhoneAttribute()
+    {
+        if (! $this->phone) {
+            return '';
+        }
+
+        return '62'.$this->phone;
+    }
 }
