@@ -20,10 +20,10 @@ Thank you udah titip oleh2 lewat *@keranjangoleh2*
 @foreach($orderItems as $item)
 {{ $item->quantity }}x {{ $item->name }}
 @if($item->notes)
-   _(notes: {{ $item->notes }})_
+    _(notes: {{ $item->notes }})_
 @endif
 @if(isset($invoice) && $invoice)
-   ({{ $item->formatted_price }} + {{ $item->formatted_fee }}) x {{ $item->quantity }} = {{ $item->formatted_line_total }}
+    ({{ $item->formatted_price }} + {{ $item->formatted_fee }}) x {{ $item->quantity }} = {{ $item->formatted_line_total }}
 @endif
 
 @endforeach
@@ -43,7 +43,7 @@ _Deposit: (Rp{{ number_format($order->deposit, 0, ',', '.') }})_
 @endif
 
 Pembayaran dapat dilakukan lewat Bank Transfer ke rekening *BCA 087 127 3757* a.n Fernanda Putri. Kabarin ya kalau udah melakukan pembayaran.
-    
+
 @endif
 
 Thank you and have a wonderful day :)
