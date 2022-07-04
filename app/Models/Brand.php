@@ -20,6 +20,10 @@ class Brand extends Model
         'information',
     ];
 
+    protected $appends = [
+        'whatsapp_phone',
+    ];
+
     public function products()
     {
         return $this->hasMany(Product::class);
@@ -48,5 +52,14 @@ class Brand extends Model
     public function getOrderItemsCountAttribute()
     {
         return $this->orderItems->sum('quantity');
+    }
+
+    public function getWhatsappPhoneAttribute()
+    {
+        if (! $this->phone) {
+            return '';
+        }
+
+        return '62'.$this->phone;
     }
 }

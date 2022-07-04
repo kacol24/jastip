@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\BrandResource\Pages;
 use App\Filament\Resources\BrandResource\RelationManagers;
 use App\Models\Brand;
+use App\Models\Order;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -52,6 +53,9 @@ class BrandResource extends Resource
                                              return number_format($state, 0, ',', '.');
                                          }),
                 Tables\Columns\TextColumn::make('phone')
+                                         ->prefix(fn(Brand $record): string => $record->whatsapp_phone ? '+62' : '')
+                                         ->url(fn(Brand $record): string => $record->whatsapp_phone ? 'https://wa.me/'.$record->whatsapp_phone : '')
+                                         ->openUrlInNewTab()
                                          ->toggleable(),
                 Tables\Columns\TextColumn::make('address')
                                          ->limit(30)
