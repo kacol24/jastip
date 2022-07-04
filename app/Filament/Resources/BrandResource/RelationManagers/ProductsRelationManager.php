@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProductsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'products';
+    protected static string $relationship = 'orderItems';
 
     protected static ?string $title = 'Order List';
 
@@ -28,25 +28,23 @@ class ProductsRelationManager extends RelationManager
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('order_count'),
-                Tables\Columns\TextColumn::make('order_quantity')
-                                         ->label('Order Qty.'),
-                Tables\Columns\TextColumn::make('price')
-                                         ->prefix('Rp')
-                                         ->formatStateUsing(function ($state) {
-                                             return number_format($state, 0, ',', '.');
-                                         }),
-                Tables\Columns\TextColumn::make('order_subtotal')
-                                         ->prefix('Rp')
-                                         ->formatStateUsing(function ($state) {
-                                             return number_format($state, 0, ',', '.');
-                                         }),
+                Tables\Columns\TextColumn::make('notes'),
+                //Tables\Columns\TextColumn::make('order_count'),
+                Tables\Columns\TextColumn::make('quantity')
+                                         ->label('Qty.'),
+                //Tables\Columns\TextColumn::make('price')
+                //                         ->prefix('Rp')
+                //                         ->formatStateUsing(function ($state) {
+                //                             return number_format($state, 0, ',', '.');
+                //                         }),
+                //Tables\Columns\TextColumn::make('order_subtotal')
+                //                         ->prefix('Rp')
+                //                         ->formatStateUsing(function ($state) {
+                //                             return number_format($state, 0, ',', '.');
+                //                         }),
             ])
             ->filters([
-                Tables\Filters\Filter::make('has_order')
-                                     ->query(fn(Builder $query): Builder => $query->has('orderItems'))
-                                     ->toggle()
-                                     ->default(),
+                //
             ])
             ->headerActions([
                 //Tables\Actions\CreateAction::make(),

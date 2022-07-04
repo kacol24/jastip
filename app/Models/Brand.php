@@ -20,10 +20,6 @@ class Brand extends Model
         'information',
     ];
 
-    protected $appends = [
-        'whatsapp_phone',
-    ];
-
     public function products()
     {
         return $this->hasMany(Product::class);
@@ -61,5 +57,29 @@ class Brand extends Model
         }
 
         return '62'.$this->phone;
+    }
+
+    public function getOrderListLinkAttribute()
+    {
+        $orderItems = $this->orderItems;
+        $orderItemsByNotes = $this->orderItems->unique('notes')
+                                              ->groupBy(function ($orderItem) {
+                                                  return $orderItem->product->name;
+                                              })
+                                              ->each(function ($product) use ($orderItems) {
+                                                  $product->map(function ($itemNote) use ($orderItems) {
+                                                      $itemNote->quantity = $orderItems->where('notes',
+                                                          $itemNote->notes)
+                                                                                       ->sum('quantity');
+
+                                                      return $itemNote;
+                                                  });
+                                              });
+
+        $append = view('brand.wa-order-list', [
+            'orderItems' => $orderItemsByNotes,
+        ])->render();
+
+        return "https://wa.me/{$this->whatsapp_phone}?text=".urlencode($append);
     }
 }

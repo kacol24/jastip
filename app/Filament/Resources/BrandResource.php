@@ -11,6 +11,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -54,7 +55,8 @@ class BrandResource extends Resource
                                          }),
                 Tables\Columns\TextColumn::make('phone')
                                          ->prefix(fn(Brand $record): string => $record->whatsapp_phone ? '+62' : '')
-                                         ->url(fn(Brand $record): string => $record->whatsapp_phone ? 'https://wa.me/'.$record->whatsapp_phone : '')
+                                         ->url(fn(Brand $record
+                                         ): string => $record->whatsapp_phone ? 'https://wa.me/'.$record->whatsapp_phone : '')
                                          ->openUrlInNewTab()
                                          ->toggleable(),
                 Tables\Columns\TextColumn::make('address')
@@ -71,6 +73,11 @@ class BrandResource extends Resource
                                      ->toggle(),
             ])
             ->actions([
+                Action::make('order_list')
+                      ->label('Order List')
+                      ->url(fn(Brand $record): string => $record->order_list_link)
+                      ->icon('heroicon-o-clipboard-list')
+                      ->openUrlInNewTab(),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
