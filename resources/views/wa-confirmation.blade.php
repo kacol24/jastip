@@ -6,8 +6,12 @@ Cek kembali detail pesanan kamu ya, pastikan udah benar dan sesuai...
 *PENGIRIMAN*
 ==========
 {{ $customer->name }}
+@if($customer->phone)
 {{ $customer->phone ? '0' . $customer->phone : '' }}
-{{ $customer->address }}
+@endif
+@if($customer->address)
+{{ strtoupper($customer->address) }}
+@endif
 
 *ORDER*
 ==========

@@ -6,8 +6,12 @@ Berikut detail pesanan dan tagihan kamu ya...
 *PENGIRIMAN*
 ==========
 {{ $customer->name }}
-{{ $customer->phone }}
+@if($customer->phone)
+{{ $customer->phone ? '0' . $customer->phone : '' }}
+@endif
+@if($customer->address)
 {{ strtoupper($customer->address) }}
+@endif
 
 *ORDER*
 ==========
