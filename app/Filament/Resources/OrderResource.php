@@ -18,8 +18,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Actions\Action;
 
 class OrderResource extends Resource
 {
@@ -94,11 +93,22 @@ class OrderResource extends Resource
                                          ->sortable(),
                 Tables\Columns\TextColumn::make('items_count')
                                          ->counts('items')
-                                         ->label('Items'),
+                                         ->label('Items')
+                                         ->toggleable(),
                 Tables\Columns\TextColumn::make('items_sum_quantity')
                                          ->sum('items', 'quantity')
-                                         ->label('Qty.'),
-                Tables\Columns\TextColumn::make('status'),
+                                         ->label('Qty.')
+                                         ->toggleable(),
+                Tables\Columns\BadgeColumn::make('status')
+                                          ->enum([
+                                              'Open'            => 'Open',
+                                              'Closed'          => 'Closed',
+                                              'Shipping'        => 'Shipping',
+                                              'Shipped'         => 'Shipped',
+                                              'Pending Payment' => 'Pending Payment',
+                                              'Paid'            => 'Paid',
+                                              'Completed'       => 'Completed',
+                                          ]),
                 Tables\Columns\TextColumn::make('subtotal')
                                          ->prefix('Rp')
                                          ->formatStateUsing(fn($state) => number_format($state, 0, ',', '.')),
@@ -112,7 +122,8 @@ class OrderResource extends Resource
                                          ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('deposit')
                                          ->prefix('Rp')
-                                         ->formatStateUsing(fn($state) => number_format($state, 0, ',', '.')),
+                                         ->formatStateUsing(fn($state) => number_format($state, 0, ',', '.'))
+                                         ->toggleable(),
                 Tables\Columns\TextColumn::make('amount_due')
                                          ->prefix('Rp')
                                          ->formatStateUsing(fn($state) => number_format($state, 0, ',', '.'))
@@ -125,18 +136,38 @@ class OrderResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\Action::make('confirmation')
-                                     ->label('Confirm Order')
-                                     ->url(fn(Order $record): string => $record->confirmation_link)
-                                     ->icon('heroicon-o-clipboard-list')
-                                     ->visible(fn(Order $record): bool => $record->status == Order::STATUS_OPEN)
-                                     ->openUrlInNewTab(),
-                Tables\Actions\Action::make('invoice')
-                                     ->label('Send Invoice')
-                                     ->url(fn(Order $record): string => $record->invoice_link)
-                                     ->icon('heroicon-s-cash')
-                                     ->visible(fn(Order $record): bool => $record->status == Order::STATUS_CLOSED)
-                                     ->openUrlInNewTab(),
+                Action::make('order_status')
+                      ->label('Status')
+                      ->action(function (Order $record, $data): void {
+                          $record->status = $data['status'];
+                          $record->save();
+                      })
+                      ->form([
+                          Select::make('status')
+                                ->label('Status')
+                                ->options([
+                                    'Open'            => 'Open',
+                                    'Closed'          => 'Closed',
+                                    'Shipping'        => 'Shipping',
+                                    'Shipped'         => 'Shipped',
+                                    'Pending Payment' => 'Pending Payment',
+                                    'Paid'            => 'Paid',
+                                    'Completed'       => 'Completed',
+                                ])
+                                ->required(),
+                      ]),
+                Action::make('confirmation')
+                      ->label('Confirm Order')
+                      ->url(fn(Order $record): string => $record->confirmation_link)
+                      ->icon('heroicon-o-clipboard-list')
+                      ->visible(fn(Order $record): bool => $record->status == Order::STATUS_OPEN)
+                      ->openUrlInNewTab(),
+                Action::make('invoice')
+                      ->label('Send Invoice')
+                      ->url(fn(Order $record): string => $record->invoice_link)
+                      ->icon('heroicon-s-cash')
+                      ->visible(fn(Order $record): bool => $record->status == Order::STATUS_CLOSED)
+                      ->openUrlInNewTab(),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
