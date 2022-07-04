@@ -37,7 +37,8 @@ class OrderResource extends Resource
                               ->label('Customer')
                               ->options(Customer::active()->get()
                                                 ->pluck('name', 'id'))
-                              ->searchable(),
+                              ->searchable()
+                              ->required(),
                         Select::make('status')
                               ->options([
                                   Order::STATUS_OPEN      => Order::STATUS_OPEN,
@@ -93,14 +94,11 @@ class OrderResource extends Resource
                                          ->sortable(),
                 Tables\Columns\TextColumn::make('items_count')
                                          ->counts('items')
-                                         ->label('Orders'),
+                                         ->label('Items'),
                 Tables\Columns\TextColumn::make('items_sum_quantity')
                                          ->sum('items', 'quantity')
                                          ->label('Qty.'),
                 Tables\Columns\TextColumn::make('status'),
-                Tables\Columns\TextColumn::make('deposit')
-                                         ->prefix('Rp')
-                                         ->formatStateUsing(fn($state) => number_format($state, 0, ',', '.')),
                 Tables\Columns\TextColumn::make('subtotal')
                                          ->prefix('Rp')
                                          ->formatStateUsing(fn($state) => number_format($state, 0, ',', '.')),
@@ -112,6 +110,9 @@ class OrderResource extends Resource
                                          ->prefix('Rp')
                                          ->formatStateUsing(fn($state) => number_format($state, 0, ',', '.'))
                                          ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('deposit')
+                                         ->prefix('Rp')
+                                         ->formatStateUsing(fn($state) => number_format($state, 0, ',', '.')),
                 Tables\Columns\TextColumn::make('amount_due')
                                          ->prefix('Rp')
                                          ->formatStateUsing(fn($state) => number_format($state, 0, ',', '.'))
@@ -191,42 +192,48 @@ class OrderResource extends Resource
                         ])
                         ->columns(2),
                 ]),
-            Grid::make()
-                ->schema([
-                    TextInput::make('price')
-                             ->disabled()
-                             ->prefix('Rp')
-                             ->default('0')
-                             ->mask(fn(Mask $mask) => $mask->money('', '.', 0)),
-                    TextInput::make('fee')
-                             ->disabled()
-                             ->prefix('Rp')
-                             ->default('0')
-                             ->mask(fn(Mask $mask) => $mask->money('', '.', 0)),
-                    TextInput::make('quantity')
-                             ->numeric()
-                             ->reactive()
-                             ->afterStateUpdated(function (
-                                 $state,
-                                 callable $set,
-                                 \Closure $get
-                             ) {
-                                 $product = Product::find($get('product_id'));
-                                 $price = $product->price ?? 0;
-                                 $fee = $product->fee ?? 0;
-                                 $subtotal = ($price + $fee) * $state;
+            Grid::make([
+                'default' => 2,
+            ])->schema([
+                TextInput::make('price')
+                         ->disabled()
+                         ->prefix('Rp')
+                         ->default('0')
+                         ->mask(fn(Mask $mask) => $mask->money('', '.', 0))
+                         ->columnSpan(2),
+                TextInput::make('fee')
+                         ->disabled()
+                         ->prefix('Rp')
+                         ->default('0')
+                         ->mask(fn(Mask $mask) => $mask->money('', '.', 0)),
+                TextInput::make('discount_fee')
+                         ->prefix('Rp')
+                         ->default('0')
+                         ->mask(fn(Mask $mask) => $mask->money('', '.', 0)),
+                TextInput::make('quantity')
+                         ->numeric()
+                         ->reactive()
+                         ->afterStateUpdated(function (
+                             $state,
+                             callable $set,
+                             \Closure $get
+                         ) {
+                             $product = Product::find($get('product_id'));
+                             $price = $product->price ?? 0;
+                             $fee = $product->fee ?? 0;
+                             $subtotal = ($price + $fee) * $state;
 
-                                 $set('price', number_format($price, 0, ',', '.'));
-                                 $set('fee', number_format($fee, 0, ',', '.'));
-                                 $set('subtotal', number_format($subtotal, 0, ',', '.'));
-                             })
-                             ->default(1),
-                    TextInput::make('line_total')
-                             ->disabled()
-                             ->prefix('Rp')
-                             ->default('0')
-                             ->mask(fn(Mask $mask) => $mask->money('', '.', 0)),
-                ])
+                             $set('price', number_format($price, 0, ',', '.'));
+                             $set('fee', number_format($fee, 0, ',', '.'));
+                             $set('subtotal', number_format($subtotal, 0, ',', '.'));
+                         })
+                         ->default(1),
+                TextInput::make('line_total')
+                         ->disabled()
+                         ->prefix('Rp')
+                         ->default('0')
+                         ->mask(fn(Mask $mask) => $mask->money('', '.', 0)),
+            ])
                 ->columns(4),
         ];
     }

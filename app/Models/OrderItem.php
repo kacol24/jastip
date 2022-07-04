@@ -15,6 +15,7 @@ class OrderItem extends Model
         'product_id',
         'quantity',
         'notes',
+        'discount_fee',
     ];
 
     protected $with = [
@@ -52,7 +53,7 @@ class OrderItem extends Model
 
     public function getFeeAttribute()
     {
-        return $this->product->fee;
+        return $this->product->fee - $this->discount_fee;
     }
 
     public function getSubtotalAttribute()
@@ -87,6 +88,6 @@ class OrderItem extends Model
 
     protected function formatMoney($amount)
     {
-        return 'Rp' . number_format($amount, 0, ',', '.');
+        return 'Rp'.number_format($amount, 0, ',', '.');
     }
 }
