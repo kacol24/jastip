@@ -7,4 +7,5 @@
     _(notes: {{ $item->notes }})_
 @endif
 @endforeach
+    
 @endforeach
