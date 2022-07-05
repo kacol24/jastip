@@ -62,19 +62,18 @@ class Brand extends Model
     public function getOrderListLinkAttribute()
     {
         $orderItems = $this->orderItems;
-        $orderItemsByNotes = $this->orderItems->unique('notes')
-                                              ->groupBy(function ($orderItem) {
-                                                  return $orderItem->product->name;
-                                              })
-                                              ->each(function ($product) use ($orderItems) {
-                                                  $product->map(function ($itemNote) use ($orderItems) {
-                                                      $itemNote->quantity = $orderItems->where('notes',
-                                                          $itemNote->notes)
-                                                                                       ->sum('quantity');
+        $orderItemsByNotes = $this->products
+            ->map(function ($product) {
+                $uniqueItems = $product->orderItems->unique('notes');
+                $orderItems = $product->orderItems;
+                $product->orderItems = $uniqueItems->map(function ($item) use ($orderItems) {
+                    $item->quantity = $orderItems->where('notes', $item->notes)->sum('quantity');
 
-                                                      return $itemNote;
-                                                  });
-                                              });
+                    return $item;
+                });
+
+                return $product;
+            });
 
         $append = view('brand.wa-order-list', [
             'orderItems' => $orderItemsByNotes,
