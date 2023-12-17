@@ -26,7 +26,7 @@ Artisan::command('deploy', function () {
     $this->call('view:cache');
     $this->call('queue:restart');
 
-    $this->call('icons:cache');
+    //$this->call('icons:cache');
 })->purpose('Cache and optimize. Used for production.');
 
 Artisan::command('deploy:clear', function () {
@@ -37,5 +37,5 @@ Artisan::command('deploy:clear', function () {
     $this->call('view:clear');
     $this->call('queue:restart');
 
-    $this->call('icons:clear');
+    //$this->call('icons:clear');
 })->purpose('Clears all cache and optimizations.');
